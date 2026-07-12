@@ -1,0 +1,19 @@
+{
+  // Cloudflare Workers config for the KFBS EVC site (deployed via OpenNext).
+  // Docs: https://opennext.js.org/cloudflare
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kfbsevc",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-03-25",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+  // Set NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY as
+  // environment variables in the Cloudflare dashboard (Workers & Pages →
+  // your project → Settings → Variables) or via `wrangler secret put`.
+}

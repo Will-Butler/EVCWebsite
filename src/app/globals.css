@@ -1,26 +1,147 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  KFBS EVC design tokens. Palette anchored on official UNC colors:
+  Carolina Blue (#4B9CD3) as the accent, UNC Navy (#13294B) as the deep tone.
+  The site is intentionally light-mode only for a consistent, professional
+  brand impression across devices and email/link previews.
+*/
+@theme {
+  --color-carolina: #4b9cd3;
+  --color-carolina-light: #7bafd4;
+  --color-carolina-dark: #2f80c2;
+  --color-navy: #13294b;
+  --color-navy-800: #1c3a63;
+  --color-ink: #0f1b2d;
+  --color-slate-body: #475569;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f5f8fc;
+  --color-line: #e2e8f0;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card: 0 1px 2px rgba(15, 27, 45, 0.04),
+    0 8px 24px -12px rgba(15, 27, 45, 0.18);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Consistent focus ring for keyboard users / accessibility. */
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--color-carolina);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Reusable layout + component utilities kept small and intentional. */
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.625rem;
+    padding: 0.7rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1;
+    transition: background-color 0.15s ease, color 0.15s ease,
+      border-color 0.15s ease, transform 0.05s ease;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-primary {
+    background: var(--color-carolina);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: var(--color-carolina-dark);
+  }
+  .btn-navy {
+    background: var(--color-navy);
+    color: #fff;
+  }
+  .btn-navy:hover {
+    background: var(--color-navy-800);
+  }
+  .btn-outline {
+    border: 1px solid var(--color-line);
+    background: #fff;
+    color: var(--color-navy);
+  }
+  .btn-outline:hover {
+    border-color: var(--color-carolina);
+    color: var(--color-carolina-dark);
+  }
+
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  .eyebrow {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-carolina-dark);
+  }
+
+  .label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-navy);
+    margin-bottom: 0.35rem;
+  }
+
+  .input {
+    width: 100%;
+    border: 1px solid var(--color-line);
+    border-radius: 0.5rem;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.95rem;
+    background: #fff;
+    color: var(--color-ink);
+  }
+  .input::placeholder {
+    color: #94a3b8;
+  }
+  .input:focus {
+    border-color: var(--color-carolina);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(75, 156, 211, 0.15);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-line);
+    padding: 0.15rem 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-carolina-dark);
+  }
 }
