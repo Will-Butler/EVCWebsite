@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import ProgramsExplorer from "@/components/ProgramsExplorer";
+import Reveal from "@/components/Reveal";
 import { SITE } from "@/lib/constants";
 import { PROGRAMS } from "@/lib/programs";
 import { pageMetadata, JsonLd } from "@/lib/seo";
@@ -77,14 +78,17 @@ export default function AboutPage() {
       />
 
       {/* Mission + values */}
-      <section className="container-page py-16 md:py-20">
+      <section className="container-page py-16 md:py-24">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr]">
-          <div>
+          <Reveal>
             <p className="eyebrow">Our mission</p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[var(--color-navy)]">
-              Founders, investors, and innovators — in one room
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-navy)] md:text-4xl">
+              Founders, investors, and innovators —{" "}
+              <span className="italic text-[var(--color-carolina-dark)]">
+                in one room
+              </span>
             </h2>
-            <div className="mt-5 space-y-4 text-lg leading-relaxed text-[var(--color-slate-body)]">
+            <div className="mt-6 space-y-4 text-lg leading-relaxed text-[var(--color-slate-body)]">
               <p>
                 We exist to bridge the gap between ideas and execution. Through
                 events, mentorship, and hands-on experiences, EVC helps students
@@ -99,15 +103,16 @@ export default function AboutPage() {
                 edge in the startup and investing world.
               </p>
             </div>
-          </div>
+          </Reveal>
 
           <ul className="space-y-4">
             {values.map((v, i) => (
-              <li key={v.title} className="card p-6">
+              <Reveal as="li" key={v.title} delay={i * 110} className="card p-6">
                 <div className="flex items-baseline gap-3">
                   <span
                     aria-hidden
                     className="text-sm font-bold text-[var(--color-signal)]"
+                    style={{ fontFamily: "var(--font-display)" }}
                   >
                     0{i + 1}
                   </span>
@@ -118,33 +123,41 @@ export default function AboutPage() {
                 <p className="mt-2 text-sm leading-relaxed text-[var(--color-slate-body)]">
                   {v.body}
                 </p>
-              </li>
+              </Reveal>
             ))}
           </ul>
         </div>
       </section>
 
       {/* Programs — merged in, expandable */}
-      <section id="programs" className="scroll-mt-20 bg-[var(--color-surface-muted)]">
-        <div className="container-page py-16 md:py-20">
-          <p className="eyebrow">What we run</p>
-          <h2 className="mt-2 max-w-3xl text-3xl font-bold tracking-tight text-[var(--color-navy)] md:text-4xl">
-            Programming that runs all year long
-          </h2>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--color-slate-body)]">
-            Competitions, treks, weekly labs, and candid conversations with the
-            people building and funding companies. Tap any program to dig in.
-          </p>
+      <section
+        id="programs"
+        className="scroll-mt-20 border-y border-[var(--color-line)] bg-[var(--color-surface-muted)]"
+      >
+        <div className="container-page py-16 md:py-24">
+          <Reveal>
+            <p className="eyebrow">What we run</p>
+            <h2 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-[var(--color-navy)] md:text-5xl">
+              Programming that runs{" "}
+              <span className="italic text-[var(--color-carolina-dark)]">
+                all year long
+              </span>
+            </h2>
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--color-slate-body)]">
+              Competitions, treks, weekly labs, and candid conversations with the
+              people building and funding companies. Tap any program to dig in.
+            </p>
+          </Reveal>
           <ProgramsExplorer />
         </div>
       </section>
 
       {/* Exec board */}
-      <section className="container-page py-16 md:py-20">
-        <div className="grid items-center gap-10 md:grid-cols-2">
+      <section className="container-page py-16 md:py-24">
+        <Reveal className="grid items-center gap-10 md:grid-cols-2">
           <div>
             <p className="eyebrow">Leadership</p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[var(--color-navy)]">
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-navy)] md:text-4xl">
               The 2026–2027 Executive Board
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-[var(--color-slate-body)]">
@@ -183,7 +196,7 @@ export default function AboutPage() {
               to display it here.
             </span>
           </div>
-        </div>
+        </Reveal>
       </section>
     </>
   );

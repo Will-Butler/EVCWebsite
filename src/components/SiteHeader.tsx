@@ -20,12 +20,13 @@ export default function SiteHeader() {
       >
         <Link
           href="/"
-          className="flex items-center gap-2.5"
+          className="group flex items-center gap-2.5"
           onClick={() => setOpen(false)}
         >
           <span
             aria-hidden
-            className="grid h-9 w-9 place-items-center rounded-lg bg-[var(--color-navy)] text-sm font-bold text-white"
+            className="grid h-9 w-9 place-items-center rounded-lg bg-[var(--color-navy)] text-sm font-bold text-white transition-all duration-300 group-hover:-rotate-6 group-hover:bg-[var(--color-signal)]"
+            style={{ fontFamily: "var(--font-ui)" }}
           >
             EVC
           </span>
@@ -43,9 +44,9 @@ export default function SiteHeader() {
               key={item.href}
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
-              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+              className={`nav-link rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                 isActive(item.href)
-                  ? "text-[var(--color-carolina-dark)]"
+                  ? "text-[var(--color-navy)]"
                   : "text-[var(--color-slate-body)] hover:text-[var(--color-navy)]"
               }`}
             >
