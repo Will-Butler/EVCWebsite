@@ -38,7 +38,7 @@ export default function SiteHeader() {
             />
           </span>
           <span className="hidden text-sm font-semibold leading-tight text-[var(--color-navy)] sm:block">
-            Entrepreneurship &amp; Venture Capital
+            Entrepreneurship &amp; Venture Capital Club
             <span className="block text-xs font-medium text-[var(--color-slate-body)]">
               {SITE.school}
             </span>
