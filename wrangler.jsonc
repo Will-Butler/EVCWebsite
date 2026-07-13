@@ -13,6 +13,12 @@
   "observability": {
     "enabled": true
   },
+  // Serve the site on the custom domain (registered in this Cloudflare account).
+  // Wrangler provisions the DNS records + HTTPS automatically on deploy.
+  "routes": [
+    { "pattern": "uncevc.com", "custom_domain": true },
+    { "pattern": "www.uncevc.com", "custom_domain": true }
+  ],
   // D1 database for the Network directory + Ventures repository.
   // The app reads this through the `DB` binding (see src/lib/db.ts).
   // Apply the schema with:
