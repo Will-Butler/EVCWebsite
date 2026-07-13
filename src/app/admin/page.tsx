@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { dbListVentures, dbListPeople, hasDb } from "@/lib/db";
 import { moderate } from "@/lib/actions";
 import ConfirmButton from "@/components/admin/ConfirmButton";
@@ -18,6 +19,33 @@ type Row = {
 };
 
 export default async function AdminPage() {
+  // Fail closed: in production the dashboard only renders for requests that
+  // came through Cloudflare Access, which injects this identity header (and
+  // strips any client-supplied copy). If Access isn't in front of /admin, the
+  // header is absent and we refuse to render — so a misconfigured Access policy
+  // can never expose submissions. Local dev (non-production) is exempt.
+  if (process.env.NODE_ENV === "production") {
+    const email = (await headers()).get("cf-access-authenticated-user-email");
+    if (!email) {
+      return (
+        <Shell>
+          <div className="card max-w-lg p-8">
+            <p className="font-semibold text-[var(--color-navy)]">
+              Access required
+            </p>
+            <p className="mt-2 text-sm text-[var(--color-slate-body)]">
+              This dashboard is restricted to authorized club officers and is
+              protected by Cloudflare Access. If you&apos;re seeing this page,
+              the Access application isn&apos;t in front of{" "}
+              <code>/admin</code> yet — check the Zero Trust → Access
+              configuration.
+            </p>
+          </div>
+        </Shell>
+      );
+    }
+  }
+
   if (!hasDb()) {
     return (
       <Shell>
