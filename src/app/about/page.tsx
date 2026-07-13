@@ -1,10 +1,20 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import type { Metadata } from "next";
+import Image from "next/image";
 import PageHeader from "@/components/PageHeader";
 import ProgramsExplorer from "@/components/ProgramsExplorer";
 import Reveal from "@/components/Reveal";
 import { SITE } from "@/lib/constants";
 import { PROGRAMS } from "@/lib/programs";
 import { pageMetadata, JsonLd } from "@/lib/seo";
+
+// Show the real board photo when it's present, otherwise fall back to the
+// placeholder — checked at build time so the page never depends on a missing
+// file. Drop the image at public/exec-board.jpg to enable it.
+const hasBoardPhoto = existsSync(
+  join(process.cwd(), "public", "exec-board.jpg"),
+);
 
 export const metadata: Metadata = pageMetadata({
   title: "About & Programs",
@@ -182,20 +192,30 @@ export default function AboutPage() {
               .
             </p>
           </div>
-          {/*
-            Drop the board photo at public/exec-board.jpg to replace this
-            placeholder (kept as a plain box so the page never depends on a
-            missing image).
-          */}
-          <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-[var(--color-line)] bg-[var(--color-surface-muted)] text-center text-sm text-[var(--color-slate-body)]">
-            <span className="max-w-xs px-6">
-              Executive Board photo — add{" "}
-              <code className="rounded bg-white px-1 py-0.5 text-xs">
-                public/exec-board.jpg
-              </code>{" "}
-              to display it here.
-            </span>
-          </div>
+          {hasBoardPhoto ? (
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-[var(--color-line)] shadow-[var(--shadow-card)]">
+              <Image
+                src="/exec-board.jpg"
+                alt="The 2026–2027 EVC Executive Board"
+                fill
+                sizes="(min-width: 768px) 40vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+          ) : (
+            /* Drop the board photo at public/exec-board.jpg to replace this
+               placeholder (kept as a plain box so the page never depends on a
+               missing image). */
+            <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-[var(--color-line)] bg-[var(--color-surface-muted)] text-center text-sm text-[var(--color-slate-body)]">
+              <span className="max-w-xs px-6">
+                Executive Board photo — add{" "}
+                <code className="rounded bg-white px-1 py-0.5 text-xs">
+                  public/exec-board.jpg
+                </code>{" "}
+                to display it here.
+              </span>
+            </div>
+          )}
         </Reveal>
       </section>
     </>
