@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { SITE } from "@/lib/constants";
-import { PROGRAMS } from "@/lib/programs";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -11,31 +10,30 @@ export const metadata: Metadata = pageMetadata({
   path: "/",
 });
 
+const ecosystem = ["Founders", "Investors", "Builders", "Alumni", "Faculty"];
+
 const features = [
   {
+    n: "01",
     title: "Network Directory",
-    body: "Discover members, alumni, faculty, founders, and investors across the EVC community. Find mentors, co-founders, and the people who can open doors.",
+    body: "Members, alumni, faculty, founders, and investors — the people who open doors. Find a mentor, a co-founder, or your next intro.",
     href: "/network",
     cta: "Browse the network",
   },
   {
+    n: "02",
     title: "Venture Repository",
-    body: "Browse active ventures being built by UNC Kenan-Flagler MBA students, and connect directly with the founders behind them.",
+    body: "Real companies being built right now by Kenan-Flagler MBAs. Explore what members are building and reach the founders directly.",
     href: "/ventures",
     cta: "View ventures",
   },
   {
+    n: "03",
     title: "Programs & Events",
-    body: "From E-Week and VCIC to career treks and weekly career labs, our programming is built to launch careers in startups and venture capital.",
-    href: "/programs",
+    body: "E-Week, VCIC, career treks, and weekly Career Labs — hands-on programming built to launch careers in startups and venture capital.",
+    href: "/about#programs",
     cta: "See our programs",
   },
-];
-
-const stats = [
-  { value: "#1", label: "Host of VCIC — the world's largest student VC competition" },
-  { value: "52+", label: "Career Labs and sessions across the year" },
-  { value: "3", label: "Research Triangle schools connected via the Triangle Mixer" },
 ];
 
 export default function HomePage() {
@@ -43,28 +41,39 @@ export default function HomePage() {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden bg-[var(--color-navy)] text-white">
+        <div aria-hidden className="dot-grid pointer-events-none absolute inset-0 opacity-70" />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.15]"
+          className="pointer-events-none absolute inset-0"
           style={{
             backgroundImage:
-              "radial-gradient(60rem 30rem at 70% -10%, var(--color-carolina) 0%, transparent 60%)",
+              "radial-gradient(48rem 26rem at 78% -8%, var(--color-carolina) 0%, transparent 62%), radial-gradient(38rem 22rem at 8% 118%, var(--color-signal) 0%, transparent 55%)",
+            opacity: 0.28,
           }}
         />
         <div className="container-page relative py-20 md:py-28">
-          <p className="eyebrow text-[var(--color-carolina-light)]">
+          <p className="eyebrow !text-[var(--color-carolina-light)]">
             {SITE.school}
           </p>
-          <h1 className="mt-3 max-w-4xl text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl">
-            Entrepreneurship &amp; Venture Capital at UNC Kenan-Flagler
+          <h1 className="mt-4 max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
+            Build the next great company.{" "}
+            <span className="whitespace-nowrap">Or</span>{" "}
+            <span className="relative inline-block">
+              <span className="relative z-10">fund it.</span>
+              <span
+                aria-hidden
+                className="absolute inset-x-0 bottom-1 z-0 h-3 -rotate-1 bg-[var(--color-signal)] opacity-90 md:bottom-2 md:h-4"
+              />
+            </span>
           </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-200 md:text-xl">
-            {SITE.tagline} We connect MBA students, alumni, founders, and VCs —
-            and give you the programs, network, and hands-on experience to build
-            or fund the next great company.
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-200 md:text-xl">
+            EVC is where entrepreneurship and venture capital meet at UNC
+            Kenan-Flagler. We connect MBA students with the founders and
+            investors doing the work — and give you the programs, network, and
+            hands-on reps to go do it yourself.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/programs" className="btn btn-primary">
+            <Link href="/about#programs" className="btn btn-primary">
               Explore our programs
             </Link>
             <Link
@@ -80,89 +89,66 @@ export default function HomePage() {
               Get involved
             </a>
           </div>
-        </div>
-      </section>
 
-      {/* Stats */}
-      <section className="border-b border-[var(--color-line)] bg-white">
-        <div className="container-page grid gap-6 py-10 sm:grid-cols-3">
-          {stats.map((s) => (
-            <div key={s.label} className="flex flex-col">
-              <span className="text-3xl font-bold text-[var(--color-carolina-dark)]">
-                {s.value}
+          <div className="mt-12 flex flex-wrap items-center gap-2.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              One community of
+            </span>
+            {ecosystem.map((role) => (
+              <span key={role} className="chip">
+                {role}
               </span>
-              <span className="mt-1 text-sm text-[var(--color-slate-body)]">
-                {s.label}
-              </span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Feature cards */}
       <section className="container-page py-16 md:py-24">
-        <div className="max-w-2xl">
-          <p className="eyebrow">What we do</p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-[var(--color-navy)]">
-            Three ways to plug in
-          </h2>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="max-w-2xl">
+            <p className="eyebrow">What we do</p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[var(--color-navy)] md:text-4xl">
+              Three ways to plug in
+            </h2>
+          </div>
         </div>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {features.map((f) => (
-            <div key={f.title} className="card flex flex-col p-6">
-              <h3 className="text-lg font-semibold text-[var(--color-navy)]">
+            <Link
+              key={f.title}
+              href={f.href}
+              className="group card relative flex flex-col overflow-hidden p-6 transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]"
+            >
+              <span
+                aria-hidden
+                className="absolute right-5 top-5 text-2xl font-bold text-[var(--color-line)] transition-colors group-hover:text-[var(--color-signal-soft)]"
+              >
+                {f.n}
+              </span>
+              <span
+                aria-hidden
+                className="h-1.5 w-10 rounded-full bg-[var(--color-signal)]"
+              />
+              <h3 className="mt-5 text-lg font-bold text-[var(--color-navy)]">
                 {f.title}
               </h3>
               <p className="mt-2 flex-1 text-sm leading-relaxed text-[var(--color-slate-body)]">
                 {f.body}
               </p>
-              <Link
-                href={f.href}
-                className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-carolina-dark)] transition-all hover:gap-2"
-              >
+              <span className="link-arrow mt-4">
                 {f.cta} <span aria-hidden>→</span>
-              </Link>
-            </div>
+              </span>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* Programs preview */}
-      <section className="bg-[var(--color-surface-muted)]">
-        <div className="container-page py-16 md:py-24">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div className="max-w-2xl">
-              <p className="eyebrow">Signature programs</p>
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-[var(--color-navy)]">
-                Built to launch careers in startups and VC
-              </h2>
-            </div>
-            <Link href="/programs" className="btn btn-outline">
-              All programs
-            </Link>
-          </div>
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {PROGRAMS.map((p) => (
-              <li key={p.slug} className="card p-6">
-                <div className="text-2xl" aria-hidden>
-                  {p.icon}
-                </div>
-                <h3 className="mt-3 text-base font-semibold text-[var(--color-navy)]">
-                  {p.name}
-                </h3>
-                <p className="mt-1 text-sm text-[var(--color-slate-body)]">
-                  {p.tagline}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
       {/* CTA */}
-      <section className="container-page py-16 md:py-24">
-        <div className="card flex flex-col items-start gap-4 bg-[var(--color-navy)] p-8 text-white md:flex-row md:items-center md:justify-between md:p-12">
-          <div>
+      <section className="container-page pb-16 md:pb-24">
+        <div className="card relative flex flex-col items-start gap-4 overflow-hidden bg-[var(--color-navy)] p-8 text-white md:flex-row md:items-center md:justify-between md:p-12">
+          <div aria-hidden className="dot-grid pointer-events-none absolute inset-0 opacity-60" />
+          <div className="relative">
             <h2 className="text-2xl font-bold md:text-3xl">
               Ready to build, fund, or connect?
             </h2>
@@ -171,7 +157,7 @@ export default function HomePage() {
               curious, there&apos;s a place for you in EVC.
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="relative flex flex-wrap gap-3">
             <a href={`mailto:${SITE.email}`} className="btn btn-primary">
               Email us
             </a>

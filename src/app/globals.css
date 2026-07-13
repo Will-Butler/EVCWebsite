@@ -18,10 +18,17 @@
   --color-surface-muted: #f5f8fc;
   --color-line: #e2e8f0;
 
+  /* Warm "signal" accent — the spark of entrepreneurial energy against the
+     cool Carolina palette. Used sparingly for marks, strokes, and highlights. */
+  --color-signal: #ff6a3d;
+  --color-signal-soft: #ffd8c7;
+
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   --shadow-card: 0 1px 2px rgba(15, 27, 45, 0.04),
     0 8px 24px -12px rgba(15, 27, 45, 0.18);
+  --shadow-lift: 0 2px 4px rgba(15, 27, 45, 0.05),
+    0 24px 48px -20px rgba(15, 27, 45, 0.28);
 }
 
 html {
@@ -143,5 +150,75 @@ body {
     font-size: 0.72rem;
     font-weight: 600;
     color: var(--color-carolina-dark);
+  }
+
+  /* Hand-drawn marker highlight behind a key word or two. */
+  .mark {
+    background-image: linear-gradient(
+      104deg,
+      transparent 0.4%,
+      var(--color-signal-soft) 2.4%,
+      var(--color-signal-soft) 97%,
+      transparent 99.6%
+    );
+    padding: 0 0.15em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  /* Small pill used for ecosystem tags / metadata. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  /* Animated arrow link — nudges forward on hover. */
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-carolina-dark);
+    transition: gap 0.15s ease;
+  }
+  .link-arrow:hover {
+    gap: 0.6rem;
+  }
+}
+
+/* Faint blueprint dot-grid, layered behind dark sections for depth. */
+.dot-grid {
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.12) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+}
+
+/* Accordion body reveal for the programs explorer. */
+.reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.reveal > div {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none;
   }
 }

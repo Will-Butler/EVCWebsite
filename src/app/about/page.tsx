@@ -1,16 +1,51 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
+import ProgramsExplorer from "@/components/ProgramsExplorer";
 import { SITE } from "@/lib/constants";
 import { PROGRAMS } from "@/lib/programs";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, JsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "About the EVC Club",
+  title: "About & Programs",
   description:
-    "Learn about the Entrepreneurship & Venture Capital Club at UNC Kenan-Flagler Business School — our mission to connect MBA students, alumni, founders, and venture capital investors building and funding great companies.",
+    "The Entrepreneurship & Venture Capital Club at UNC Kenan-Flagler connects MBA students, alumni, founders, and VCs — and runs E-Week, VCIC (the world's largest student VC competition), the Career Trek, weekly Career Labs, founder panels, and the Triangle Mixer.",
   path: "/about",
 });
+
+// ItemList of educational events for rich results — carried over from the old
+// standalone Programs page now that programming lives on About.
+function programsJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "EVC Programs & Events",
+    itemListElement: PROGRAMS.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "EducationEvent",
+        name: p.name,
+        description: p.description,
+        url: `${SITE.url}/about#${p.slug}`,
+        organizer: {
+          "@type": "Organization",
+          name: SITE.shortName,
+          url: SITE.url,
+        },
+        location: {
+          "@type": "Place",
+          name: SITE.school,
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: SITE.locality,
+            addressRegion: SITE.region,
+            addressCountry: SITE.country,
+          },
+        },
+      },
+    })),
+  };
+}
 
 const values = [
   {
@@ -30,19 +65,24 @@ const values = [
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={programsJsonLd()} />
       <PageHeader
         eyebrow="About EVC"
-        title="Bridging ideas and execution at UNC Kenan-Flagler"
-        intro="The Entrepreneurship & Venture Capital Club connects MBA students, alumni, and industry professionals who are passionate about building and funding the next generation of great companies."
+        title={
+          <>
+            Where ideas meet <span className="mark">execution</span>
+          </>
+        }
+        intro="The Entrepreneurship & Venture Capital Club connects MBA students, alumni, and industry professionals building and funding the next generation of great companies — and gives them the programs, access, and relationships to do it."
       />
 
-      {/* Mission */}
+      {/* Mission + values */}
       <section className="container-page py-16 md:py-20">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr]">
           <div>
             <p className="eyebrow">Our mission</p>
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-[var(--color-navy)]">
-              Where founders, investors, and innovators meet
+              Founders, investors, and innovators — in one room
             </h2>
             <div className="mt-5 space-y-4 text-lg leading-relaxed text-[var(--color-slate-body)]">
               <p>
@@ -59,22 +99,22 @@ export default function AboutPage() {
                 edge in the startup and investing world.
               </p>
             </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/programs" className="btn btn-primary">
-                Explore our programs
-              </Link>
-              <Link href="/ventures" className="btn btn-outline">
-                See member ventures
-              </Link>
-            </div>
           </div>
 
           <ul className="space-y-4">
-            {values.map((v) => (
+            {values.map((v, i) => (
               <li key={v.title} className="card p-6">
-                <h3 className="font-semibold text-[var(--color-navy)]">
-                  {v.title}
-                </h3>
+                <div className="flex items-baseline gap-3">
+                  <span
+                    aria-hidden
+                    className="text-sm font-bold text-[var(--color-signal)]"
+                  >
+                    0{i + 1}
+                  </span>
+                  <h3 className="font-semibold text-[var(--color-navy)]">
+                    {v.title}
+                  </h3>
+                </div>
                 <p className="mt-2 text-sm leading-relaxed text-[var(--color-slate-body)]">
                   {v.body}
                 </p>
@@ -84,38 +124,18 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* What we run */}
-      <section className="bg-[var(--color-surface-muted)]">
+      {/* Programs — merged in, expandable */}
+      <section id="programs" className="scroll-mt-20 bg-[var(--color-surface-muted)]">
         <div className="container-page py-16 md:py-20">
           <p className="eyebrow">What we run</p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-[var(--color-navy)]">
-            Programming across the year
+          <h2 className="mt-2 max-w-3xl text-3xl font-bold tracking-tight text-[var(--color-navy)] md:text-4xl">
+            Programming that runs all year long
           </h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {PROGRAMS.map((p) => (
-              <div key={p.slug} className="card p-6">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl" aria-hidden>
-                    {p.icon}
-                  </span>
-                  <h3 className="font-semibold text-[var(--color-navy)]">
-                    {p.name}
-                  </h3>
-                </div>
-                <p className="mt-3 text-sm leading-relaxed text-[var(--color-slate-body)]">
-                  {p.tagline}
-                </p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-8">
-            <Link
-              href="/programs"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-carolina-dark)] transition-all hover:gap-2"
-            >
-              Full program details <span aria-hidden>→</span>
-            </Link>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--color-slate-body)]">
+            Competitions, treks, weekly labs, and candid conversations with the
+            people building and funding companies. Tap any program to dig in.
           </p>
+          <ProgramsExplorer />
         </div>
       </section>
 
