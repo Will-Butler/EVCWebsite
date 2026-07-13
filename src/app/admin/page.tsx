@@ -28,7 +28,7 @@ export default async function AdminPage() {
           <p className="mt-2 text-sm text-[var(--color-slate-body)]">
             Create the D1 database and apply the schema (see{" "}
             <code>README.md</code>), then redeploy. Locally, run{" "}
-            <code>npx wrangler d1 migrations apply kfbsevc --local</code> and
+            <code>npx wrangler d1 migrations apply uncevc --local</code> and
             use <code>npm run cf:preview</code>.
           </p>
         </div>

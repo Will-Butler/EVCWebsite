@@ -1,5 +1,5 @@
 {
-  "name": "kfbsevc",
+  "name": "uncevc",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,8 +10,8 @@
     "cf:build": "opennextjs-cloudflare build",
     "cf:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "db:migrate:local": "wrangler d1 migrations apply kfbsevc --local",
-    "db:migrate": "wrangler d1 migrations apply kfbsevc --remote"
+    "db:migrate:local": "wrangler d1 migrations apply uncevc --local",
+    "db:migrate": "wrangler d1 migrations apply uncevc --remote"
   },
   "dependencies": {
     "next": "16.2.10",

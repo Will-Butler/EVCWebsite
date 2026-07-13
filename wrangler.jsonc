@@ -2,7 +2,7 @@
   // Cloudflare Workers config for the KFBS EVC site (deployed via OpenNext).
   // Docs: https://opennext.js.org/cloudflare
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "kfbsevc",
+  "name": "uncevc",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-03-25",
   "compatibility_flags": ["nodejs_compat"],
@@ -14,14 +14,14 @@
     "enabled": true
   },
   // D1 database for the Network directory + Ventures repository.
-  // Create it with `npx wrangler d1 create kfbsevc`, then paste the returned
+  // Create it with `npx wrangler d1 create uncevc`, then paste the returned
   // database_id below. Apply the schema with:
-  //   npx wrangler d1 migrations apply kfbsevc --local   (dev)
-  //   npx wrangler d1 migrations apply kfbsevc --remote  (production)
+  //   npx wrangler d1 migrations apply uncevc --local   (dev)
+  //   npx wrangler d1 migrations apply uncevc --remote  (production)
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "kfbsevc",
+      "database_name": "uncevc",
       "database_id": "REPLACE_WITH_ID_FROM_wrangler_d1_create",
       "migrations_dir": "migrations"
     }

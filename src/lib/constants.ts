@@ -12,7 +12,7 @@ export const SITE = {
   description:
     "The Entrepreneurship & Venture Capital Club (EVC) at UNC Kenan-Flagler Business School connects MBA students, alumni, founders, and venture capital investors. We run E-Week, VCIC, career treks, and weekly career labs to launch careers in startups and VC.",
   // Canonical production URL. Update if the launch domain changes.
-  url: "https://kfbsevc.com",
+  url: "https://uncevc.com",
   email: "mbaevc@kenan-flagler.unc.edu",
   linkedin: "https://www.linkedin.com/company/kfbsevc",
   locality: "Chapel Hill",

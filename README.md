@@ -1,7 +1,7 @@
 # KFBS EVC — Entrepreneurship & Venture Capital Club Website
 
 The site for the **Entrepreneurship & Venture Capital Club at UNC Kenan-Flagler
-Business School**, rebuilt for a custom domain (`kfbsevc.com`) and strong SEO.
+Business School**, rebuilt for a custom domain (`uncevc.com`) and strong SEO.
 
 - **Framework:** Next.js 16 (App Router, React 19, server-rendered for SEO)
 - **Styling:** Tailwind CSS v4 (UNC Carolina Blue / Navy design system)
@@ -43,7 +43,7 @@ To develop against a **real local D1 database** (so submissions and the admin
 dashboard work), use the Cloudflare preview instead:
 
 ```bash
-npx wrangler d1 migrations apply kfbsevc --local   # one-time: create + seed local DB
+npx wrangler d1 migrations apply uncevc --local   # one-time: create + seed local DB
 npm run cf:preview                                 # Workers runtime + local D1 at :8787
 ```
 
@@ -51,14 +51,14 @@ npm run cf:preview                                 # Workers runtime + local D1 
 
 ```bash
 npx wrangler login                    # first time only
-npx wrangler d1 create kfbsevc        # prints a database_id
+npx wrangler d1 create uncevc         # prints a database_id
 ```
 
 Paste the returned `database_id` into [`wrangler.jsonc`](wrangler.jsonc) (replace
 `REPLACE_WITH_ID_FROM_wrangler_d1_create`), then apply the schema:
 
 ```bash
-npx wrangler d1 migrations apply kfbsevc --remote
+npx wrangler d1 migrations apply uncevc --remote
 ```
 
 This creates the `ventures` and `people` tables and seeds the four current
@@ -73,7 +73,7 @@ binding in `wrangler.jsonc`.
 
 1. Cloudflare dashboard → **Zero Trust → Access → Applications → Add an
    application → Self-hosted**.
-2. Application domain: `kfbsevc.com`, path: `admin`.
+2. Application domain: `uncevc.com`, path: `admin`.
 3. Add a policy → **Allow** → include the officer emails (or an email domain
    like `@kenan-flagler.unc.edu`) who should have admin access.
 4. Save. Now visiting `/admin` requires a verified login; the app also
@@ -98,21 +98,16 @@ npm run cf:preview   # build + run the Workers bundle locally (with local D1)
 npm run cf:deploy    # build + deploy to Cloudflare (runs `wrangler login` first time)
 ```
 
-## 5. Point kfbsevc.com at Cloudflare
+## 5. Attach uncevc.com to the Worker
 
-The domain is **registered at Wix** (owned by the club — "KFBS EVC", paid
-through 2028). You don't need to transfer it to use Cloudflare:
+`uncevc.com` is **registered at Cloudflare Registrar**, so its DNS zone and
+nameservers are already set up — no external nameserver step needed.
 
-1. In **Cloudflare → Add a site →** `kfbsevc.com`. Cloudflare gives you two
-   nameservers.
-2. In your **Wix** domain settings, switch the domain to **custom / external
-   nameservers** and paste Cloudflare's two nameservers.
-3. Once DNS propagates (minutes–hours), attach the domain to your Worker:
-   **Workers & Pages → your project → Settings → Domains & Routes → Add custom
-   domain →** `kfbsevc.com` (and `www`). HTTPS is automatic.
-4. *(Optional, later)* Transfer the registrar Wix → Cloudflare to consolidate
-   billing: in Wix, unlock the domain + get the EPP/auth code, then start the
-   transfer in Cloudflare Registrar.
+1. After deploying (step 4), go to **Workers & Pages → your project → Settings →
+   Domains & Routes → Add custom domain**.
+2. Add `uncevc.com` and `www.uncevc.com` (set `www` to redirect to the apex).
+3. Cloudflare creates the DNS records and provisions HTTPS automatically. Visit
+   `https://uncevc.com` to confirm.
 
 ## 6. Editing content
 
@@ -136,9 +131,9 @@ through 2028). You don't need to transfer it to use Cloudflare:
 - `/admin` excluded from indexing
 
 **Your off-page checklist (this is what actually moves rankings):**
-1. **Google Search Console** — verify `kfbsevc.com`, submit `sitemap.xml`.
+1. **Google Search Console** — verify `uncevc.com`, submit `sitemap.xml`.
    Repeat with Bing Webmaster Tools.
-2. **Backlinks** — get these pages to link to `kfbsevc.com`:
+2. **Backlinks** — get these pages to link to `uncevc.com`:
    - the official Kenan-Flagler / UNC club listing page
    - your LinkedIn company page (About → Website)
    - VCIC's site and any partner club pages

@@ -1,6 +1,6 @@
 -- KFBS EVC — Cloudflare D1 (SQLite) schema + seed.
--- Apply locally:  npx wrangler d1 migrations apply kfbsevc --local
--- Apply to prod:  npx wrangler d1 migrations apply kfbsevc --remote
+-- Apply locally:  npx wrangler d1 migrations apply uncevc --local
+-- Apply to prod:  npx wrangler d1 migrations apply uncevc --remote
 --
 -- Note: D1 has no row-level security. Access control is enforced in code —
 -- public pages read only status='approved', writes go through Server Actions,
