@@ -1,10 +1,10 @@
 import type { Venture } from "./types";
 
 /**
- * The four active MBA ventures carried over from the current site. Used two
- * ways: (1) as a static fallback so the Ventures page looks populated before
- * Supabase is connected, and (2) as the seed rows in supabase/schema.sql.
- * Once Supabase is configured, the live table is the source of truth.
+ * The four active MBA ventures carried over from the current site. Used as a
+ * static fallback so the Ventures page looks populated when the D1 database
+ * isn't reachable. The same rows are seeded into D1 by migrations/0001_init.sql,
+ * which becomes the source of truth once the database is connected.
  */
 export const SEED_VENTURES: Venture[] = [
   {

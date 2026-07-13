@@ -5,9 +5,14 @@ Business School**, rebuilt for a custom domain (`kfbsevc.com`) and strong SEO.
 
 - **Framework:** Next.js 16 (App Router, React 19, server-rendered for SEO)
 - **Styling:** Tailwind CSS v4 (UNC Carolina Blue / Navy design system)
-- **Backend:** Supabase (Postgres + Auth) for the Network directory, Ventures
-  repository, and Admin dashboard
+- **Database:** Cloudflare D1 (serverless SQLite) for the Network directory and
+  Ventures repository — read in Server Components, written via Server Actions
+- **Admin auth:** Cloudflare Access protects `/admin` at the edge (no passwords
+  in the app)
 - **Hosting:** Cloudflare Workers via the OpenNext adapter
+
+> **Requires Node.js 22+** for the Cloudflare tooling (wrangler). Check with
+> `node -v`; if you use nvm, run `nvm use 22`.
 
 ## Pages
 
@@ -18,7 +23,7 @@ Business School**, rebuilt for a custom domain (`kfbsevc.com`) and strong SEO.
 | `/programs` | **New** — E-Week, VCIC, Career Trek, Career Labs, Panels & Fireside Chats, Triangle Mixer |
 | `/network` | Member directory (filterable), with public "Add Person" |
 | `/ventures` | MBA student ventures, with public "Add Venture" |
-| `/admin` | Password-protected moderation dashboard (approve / unpublish / delete) |
+| `/admin` | Moderation dashboard (approve / unpublish / delete), gated by Cloudflare Access |
 
 Public submissions are saved as **pending** and only appear after an admin
 approves them — this keeps spam out of the public (indexed) pages.
@@ -29,61 +34,69 @@ approves them — this keeps spam out of the public (indexed) pages.
 
 ```bash
 npm install
-npm run dev          # http://localhost:3000
+npm run dev          # plain Next.js at http://localhost:3000
 ```
 
-The site **runs without a backend**: `/ventures` shows the four seed ventures,
+`npm run dev` runs without a database: `/ventures` shows the four seed ventures,
 `/network` is empty, and the add forms show a friendly "not connected" message.
-Wire up Supabase (below) to make them live.
-
-## 2. Supabase setup (backend)
-
-1. Create a free project at [supabase.com](https://supabase.com).
-2. **SQL Editor → New query →** paste all of [`supabase/schema.sql`](supabase/schema.sql) → **Run.**
-   This creates the `ventures` and `people` tables, row-level security
-   policies, and seeds the four current ventures.
-3. **Project Settings → API →** copy the **Project URL** and the **anon public** key.
-4. Create the admin login: **Authentication → Users → Add user** (email +
-   password). That email/password is what you'll use at `/admin`.
-
-## 3. Environment variables
-
-Copy the example and fill in the two values from step 3 above:
+To develop against a **real local D1 database** (so submissions and the admin
+dashboard work), use the Cloudflare preview instead:
 
 ```bash
-cp .env.local.example .env.local
+npx wrangler d1 migrations apply kfbsevc --local   # one-time: create + seed local DB
+npm run cf:preview                                 # Workers runtime + local D1 at :8787
 ```
 
-```
-NEXT_PUBLIC_SUPABASE_URL=https://YOUR-PROJECT.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR-ANON-KEY
+## 2. Create the D1 database (production)
+
+```bash
+npx wrangler login                    # first time only
+npx wrangler d1 create kfbsevc        # prints a database_id
 ```
 
-Restart `npm run dev`. The Network/Ventures pages and Admin dashboard are now live.
+Paste the returned `database_id` into [`wrangler.jsonc`](wrangler.jsonc) (replace
+`REPLACE_WITH_ID_FROM_wrangler_d1_create`), then apply the schema:
 
-> The `anon` key is safe to expose publicly — row-level security (defined in
-> `schema.sql`) is what protects the data. Never commit a **service_role** key.
+```bash
+npx wrangler d1 migrations apply kfbsevc --remote
+```
+
+This creates the `ventures` and `people` tables and seeds the four current
+ventures. The schema lives in [`migrations/`](migrations). **No environment
+variables or secret keys are needed** — the app reaches D1 through the `DB`
+binding in `wrangler.jsonc`.
+
+## 3. Protect /admin with Cloudflare Access
+
+`/admin` has no password logic — it's gated at the edge by Cloudflare Access
+(free on the Zero Trust plan):
+
+1. Cloudflare dashboard → **Zero Trust → Access → Applications → Add an
+   application → Self-hosted**.
+2. Application domain: `kfbsevc.com`, path: `admin`.
+3. Add a policy → **Allow** → include the officer emails (or an email domain
+   like `@kenan-flagler.unc.edu`) who should have admin access.
+4. Save. Now visiting `/admin` requires a verified login; the app also
+   double-checks the Access identity header before any approve/delete.
 
 ## 4. Deploy to Cloudflare
 
 This repo is preconfigured for Cloudflare Workers via
 [OpenNext](https://opennext.js.org/cloudflare) (`wrangler.jsonc`,
-`open-next.config.ts`).
+`open-next.config.ts`). Deploy after steps 2–3.
 
 **Option A — Git-connected (recommended):**
 1. Push this repo to GitHub.
 2. Cloudflare dashboard → **Workers & Pages → Create → Import a repository**.
 3. Framework preset: **Next.js**. Build command: `npm run cf:build`.
-   Deploy command / output is handled by the adapter.
-4. Add the two `NEXT_PUBLIC_SUPABASE_*` variables under **Settings → Variables**.
-5. Every push to `main` auto-deploys.
+   The D1 binding in `wrangler.jsonc` is picked up automatically.
+4. Every push to `main` auto-deploys.
 
 **Option B — From your machine:**
 ```bash
-npm run cf:preview   # build + run the Workers bundle locally
-npm run cf:deploy    # build + deploy (runs `wrangler login` first time)
+npm run cf:preview   # build + run the Workers bundle locally (with local D1)
+npm run cf:deploy    # build + deploy to Cloudflare (runs `wrangler login` first time)
 ```
-Set the env vars in the dashboard, or with `wrangler secret put NEXT_PUBLIC_SUPABASE_URL` etc.
 
 ## 5. Point kfbsevc.com at Cloudflare
 
@@ -106,8 +119,11 @@ through 2028). You don't need to transfer it to use Cloudflare:
 - **Programs / events:** [`src/lib/programs.ts`](src/lib/programs.ts)
 - **Club info (email, LinkedIn, name, SEO keywords):** [`src/lib/constants.ts`](src/lib/constants.ts)
 - **Exec board photo:** drop `public/exec-board.jpg` (About page picks it up)
-- **Ventures / people:** managed at `/admin` once Supabase is connected
-- **Seed ventures fallback:** [`src/lib/seed.ts`](src/lib/seed.ts)
+- **Ventures / people:** submitted via the public forms and managed at `/admin`
+  (approve / unpublish / delete) once D1 is connected
+- **Seed ventures fallback:** [`src/lib/seed.ts`](src/lib/seed.ts) (shown when
+  D1 isn't reachable) — also seeded into the DB by [`migrations/`](migrations)
+- **Database schema:** [`migrations/0001_init.sql`](migrations/0001_init.sql)
 
 ## 7. SEO — built in vs. your homework
 

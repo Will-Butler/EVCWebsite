@@ -12,8 +12,18 @@
   },
   "observability": {
     "enabled": true
-  }
-  // Set NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY as
-  // environment variables in the Cloudflare dashboard (Workers & Pages →
-  // your project → Settings → Variables) or via `wrangler secret put`.
+  },
+  // D1 database for the Network directory + Ventures repository.
+  // Create it with `npx wrangler d1 create kfbsevc`, then paste the returned
+  // database_id below. Apply the schema with:
+  //   npx wrangler d1 migrations apply kfbsevc --local   (dev)
+  //   npx wrangler d1 migrations apply kfbsevc --remote  (production)
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "kfbsevc",
+      "database_id": "REPLACE_WITH_ID_FROM_wrangler_d1_create",
+      "migrations_dir": "migrations"
+    }
+  ]
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Modal from "@/components/Modal";
-import { getBrowserSupabase } from "@/lib/supabase/client";
+import { submitPerson } from "@/lib/actions";
 import { RELATION_TYPES } from "@/lib/types";
 import { SITE } from "@/lib/constants";
 
@@ -18,33 +18,23 @@ export default function AddPersonForm() {
     setStatus("submitting");
     setError(null);
 
-    const supabase = getBrowserSupabase();
-    if (!supabase) {
-      setStatus("error");
-      setError(
-        "The directory isn't connected yet. Please email us to be added.",
-      );
-      return;
-    }
-
     const form = new FormData(e.currentTarget);
     const gradRaw = String(form.get("grad_year") || "").trim();
 
-    const { error: insertError } = await supabase.from("people").insert({
+    const result = await submitPerson({
       name: String(form.get("name") || "").trim(),
       relation: String(form.get("relation") || "Current Student"),
-      title: String(form.get("title") || "").trim() || null,
-      company: String(form.get("company") || "").trim() || null,
+      title: String(form.get("title") || "").trim(),
+      company: String(form.get("company") || "").trim(),
       grad_year: gradRaw ? Number(gradRaw) : null,
-      email: String(form.get("email") || "").trim() || null,
-      linkedin: String(form.get("linkedin") || "").trim() || null,
-      bio: String(form.get("bio") || "").trim() || null,
-      status: "pending",
+      email: String(form.get("email") || "").trim(),
+      linkedin: String(form.get("linkedin") || "").trim(),
+      bio: String(form.get("bio") || "").trim(),
     });
 
-    if (insertError) {
+    if (!result.ok) {
       setStatus("error");
-      setError(insertError.message);
+      setError(result.error ?? "Something went wrong.");
       return;
     }
     setStatus("done");

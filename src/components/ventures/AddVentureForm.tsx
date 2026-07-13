@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Modal from "@/components/Modal";
-import { getBrowserSupabase } from "@/lib/supabase/client";
+import { submitVenture } from "@/lib/actions";
 import { SITE } from "@/lib/constants";
 
 type Status = "idle" | "submitting" | "done" | "error";
@@ -17,15 +17,6 @@ export default function AddVentureForm() {
     setStatus("submitting");
     setError(null);
 
-    const supabase = getBrowserSupabase();
-    if (!supabase) {
-      setStatus("error");
-      setError(
-        "Submissions aren't connected yet. Please email us and we'll add your venture.",
-      );
-      return;
-    }
-
     const form = new FormData(e.currentTarget);
     const industries = String(form.get("industries") || "")
       .split(",")
@@ -33,20 +24,19 @@ export default function AddVentureForm() {
       .filter(Boolean);
     const yearRaw = String(form.get("year") || "").trim();
 
-    const { error: insertError } = await supabase.from("ventures").insert({
+    const result = await submitVenture({
       name: String(form.get("name") || "").trim(),
       description: String(form.get("description") || "").trim(),
       industries,
       founder: String(form.get("founder") || "").trim(),
       year: yearRaw ? Number(yearRaw) : null,
-      contact_email: String(form.get("contact_email") || "").trim() || null,
-      website: String(form.get("website") || "").trim() || null,
-      status: "pending",
+      contact_email: String(form.get("contact_email") || "").trim(),
+      website: String(form.get("website") || "").trim(),
     });
 
-    if (insertError) {
+    if (!result.ok) {
       setStatus("error");
-      setError(insertError.message);
+      setError(result.error ?? "Something went wrong.");
       return;
     }
     setStatus("done");

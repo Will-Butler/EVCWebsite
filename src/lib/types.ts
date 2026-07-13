@@ -1,5 +1,5 @@
 // Shared data models. These mirror the `ventures` and `people` tables defined
-// in supabase/schema.sql.
+// in migrations/0001_init.sql (Cloudflare D1).
 
 export type ModerationStatus = "pending" | "approved";
 
