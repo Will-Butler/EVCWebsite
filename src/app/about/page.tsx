@@ -9,11 +9,11 @@ import { SITE } from "@/lib/constants";
 import { PROGRAMS } from "@/lib/programs";
 import { pageMetadata, JsonLd } from "@/lib/seo";
 
-// Show the real board photo when it's present, otherwise fall back to the
+// Show the real board graphic when it's present, otherwise fall back to the
 // placeholder — checked at build time so the page never depends on a missing
-// file. Drop the image at public/exec-board.jpg to enable it.
+// file. Drop the image at public/exec-board.png to enable it.
 const hasBoardPhoto = existsSync(
-  join(process.cwd(), "public", "exec-board.jpg"),
+  join(process.cwd(), "public", "exec-board.png"),
 );
 
 export const metadata: Metadata = pageMetadata({
@@ -164,59 +164,58 @@ export default function AboutPage() {
 
       {/* Exec board */}
       <section className="container-page py-16 md:py-24">
-        <Reveal className="grid items-center gap-10 md:grid-cols-2">
-          <div>
-            <p className="eyebrow">Leadership</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-navy)] md:text-4xl">
-              The 2026–2027 Executive Board
-            </h2>
-            <p className="mt-4 text-lg leading-relaxed text-[var(--color-slate-body)]">
-              EVC is student-led. Our executive board plans and runs every
-              program, panel, and trek throughout the year. Want to reach the
-              team?{" "}
-              <a
-                className="font-semibold text-[var(--color-carolina-dark)] underline-offset-2 hover:underline"
-                href={`mailto:${SITE.email}`}
-              >
-                Email us
-              </a>{" "}
-              or connect on{" "}
-              <a
-                className="font-semibold text-[var(--color-carolina-dark)] underline-offset-2 hover:underline"
-                href={SITE.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                LinkedIn
-              </a>
-              .
-            </p>
-          </div>
-          {hasBoardPhoto ? (
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-[var(--color-line)] shadow-[var(--shadow-card)]">
-              <Image
-                src="/exec-board.jpg"
-                alt="The 2026–2027 EVC Executive Board"
-                fill
-                sizes="(min-width: 768px) 40vw, 100vw"
-                className="object-cover"
-              />
-            </div>
-          ) : (
-            /* Drop the board photo at public/exec-board.jpg to replace this
-               placeholder (kept as a plain box so the page never depends on a
-               missing image). */
-            <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-[var(--color-line)] bg-[var(--color-surface-muted)] text-center text-sm text-[var(--color-slate-body)]">
-              <span className="max-w-xs px-6">
-                Executive Board photo — add{" "}
-                <code className="rounded bg-white px-1 py-0.5 text-xs">
-                  public/exec-board.jpg
-                </code>{" "}
-                to display it here.
-              </span>
-            </div>
-          )}
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="eyebrow justify-center">Leadership</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--color-navy)] md:text-4xl">
+            Meet the team behind EVC
+          </h2>
+          <p className="mt-4 text-lg leading-relaxed text-[var(--color-slate-body)]">
+            EVC is student-led — our executive board plans and runs every
+            program, panel, and trek throughout the year. Want to reach us?{" "}
+            <a
+              className="font-semibold text-[var(--color-carolina-dark)] underline-offset-2 hover:underline"
+              href={`mailto:${SITE.email}`}
+            >
+              Email us
+            </a>{" "}
+            or connect on{" "}
+            <a
+              className="font-semibold text-[var(--color-carolina-dark)] underline-offset-2 hover:underline"
+              href={SITE.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn
+            </a>
+            .
+          </p>
         </Reveal>
+
+        {hasBoardPhoto ? (
+          <Reveal className="mt-12">
+            <Image
+              src="/exec-board.png"
+              alt="The 2026–2027 EVC Executive Board: William Butler (President), Satbir Bhatti (EVP of VC), Addie Masterson (EVP of Entrepreneurship), Ramya Meenakshisundaram (VP of Outreach), Daniella Kapural (VP of L&D), Sahitya Yarlagadda (VP of Comms), and Declan Pene (VP of Finance)."
+              width={1920}
+              height={1080}
+              sizes="(min-width: 1152px) 1104px, 100vw"
+              className="h-auto w-full rounded-2xl border border-[var(--color-line)] shadow-[var(--shadow-lift)]"
+            />
+          </Reveal>
+        ) : (
+          /* Drop the board graphic at public/exec-board.png to replace this
+             placeholder (kept as a plain box so the page never depends on a
+             missing image). */
+          <div className="mt-12 flex aspect-video items-center justify-center rounded-2xl border border-dashed border-[var(--color-line)] bg-[var(--color-surface-muted)] text-center text-sm text-[var(--color-slate-body)]">
+            <span className="max-w-xs px-6">
+              Executive Board graphic — add{" "}
+              <code className="rounded bg-white px-1 py-0.5 text-xs">
+                public/exec-board.png
+              </code>{" "}
+              to display it here.
+            </span>
+          </div>
+        )}
       </section>
     </>
   );

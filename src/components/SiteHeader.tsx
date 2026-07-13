@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { NAV, SITE } from "@/lib/constants";
@@ -25,10 +26,16 @@ export default function SiteHeader() {
         >
           <span
             aria-hidden
-            className="grid h-9 w-9 place-items-center rounded-lg bg-[var(--color-navy)] text-sm font-bold text-white transition-all duration-300 group-hover:-rotate-6 group-hover:bg-[var(--color-signal)]"
-            style={{ fontFamily: "var(--font-ui)" }}
+            className="grid h-10 w-10 place-items-center overflow-hidden rounded-lg bg-[var(--color-navy)] ring-1 ring-black/10 transition-transform duration-300 group-hover:-rotate-6"
           >
-            EVC
+            <Image
+              src="/EVCLogo.png"
+              alt=""
+              width={40}
+              height={40}
+              className="h-full w-full object-cover"
+              priority
+            />
           </span>
           <span className="hidden text-sm font-semibold leading-tight text-[var(--color-navy)] sm:block">
             Entrepreneurship &amp; Venture Capital
