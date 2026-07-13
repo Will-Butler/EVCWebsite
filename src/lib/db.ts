@@ -145,3 +145,71 @@ export async function dbDelete(table: Table, id: string): Promise<void> {
   if (!db) throw new Error("Database not configured");
   await db.prepare(`DELETE FROM ${table} WHERE id = ?`).bind(id).run();
 }
+
+// ---------- Admin edits (update all fields, leaves status untouched) --------
+
+export async function dbUpdateVenture(
+  id: string,
+  v: {
+    name: string;
+    description: string;
+    industries: string[];
+    founder: string;
+    year: number | null;
+    contact_email: string | null;
+    website: string | null;
+  },
+): Promise<void> {
+  const db = getDb();
+  if (!db) throw new Error("Database not configured");
+  await db
+    .prepare(
+      `UPDATE ventures SET name = ?, description = ?, industries = ?,
+        founder = ?, year = ?, contact_email = ?, website = ? WHERE id = ?`,
+    )
+    .bind(
+      v.name,
+      v.description,
+      JSON.stringify(v.industries),
+      v.founder,
+      v.year,
+      v.contact_email,
+      v.website,
+      id,
+    )
+    .run();
+}
+
+export async function dbUpdatePerson(
+  id: string,
+  p: {
+    name: string;
+    relation: string;
+    title: string | null;
+    company: string | null;
+    grad_year: number | null;
+    email: string | null;
+    linkedin: string | null;
+    bio: string | null;
+  },
+): Promise<void> {
+  const db = getDb();
+  if (!db) throw new Error("Database not configured");
+  await db
+    .prepare(
+      `UPDATE people SET name = ?, relation = ?, title = ?, company = ?,
+        grad_year = ?, email = ?, linkedin = ?, bio = ? WHERE id = ?`,
+    )
+    .bind(
+      p.name,
+      p.relation,
+      p.title,
+      p.company,
+      p.grad_year,
+      p.email,
+      p.linkedin,
+      p.bio,
+      id,
+    )
+    .run();
+}

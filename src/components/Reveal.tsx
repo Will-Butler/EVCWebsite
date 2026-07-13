@@ -35,6 +35,8 @@ export default function Reveal({
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ) {
+      // Reveal immediately when motion is reduced (no observer needed).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
       return;
     }

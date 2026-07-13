@@ -1,22 +1,19 @@
 import { headers } from "next/headers";
 import { dbListVentures, dbListPeople, hasDb } from "@/lib/db";
-import { moderate } from "@/lib/actions";
-import ConfirmButton from "@/components/admin/ConfirmButton";
+import VentureAdminCard from "@/components/admin/VentureAdminCard";
+import PersonAdminCard from "@/components/admin/PersonAdminCard";
 import type { ModerationStatus } from "@/lib/types";
 
 // Access to this page is enforced at the edge by Cloudflare Access — see
 // README ("Protect /admin with Cloudflare Access"). No login code lives here.
 export const dynamic = "force-dynamic";
 
-type Table = "ventures" | "people";
-
-type Row = {
-  id: string;
-  status: ModerationStatus;
-  title: string;
-  subtitle: string;
-  detail: string;
-};
+// Sort pending items to the top so they're reviewed first.
+function pendingFirst<T extends { status: ModerationStatus }>(rows: T[]): T[] {
+  return [...rows].sort((a, b) =>
+    a.status === b.status ? 0 : a.status === "pending" ? -1 : 1,
+  );
+}
 
 export default async function AdminPage() {
   // Fail closed: in production the dashboard only renders for requests that
@@ -69,36 +66,29 @@ export default async function AdminPage() {
     dbListPeople(false),
   ]);
 
-  const ventureRows: Row[] = ventures.map((v) => ({
-    id: v.id,
-    status: v.status,
-    title: v.name,
-    subtitle: [v.founder, v.year].filter(Boolean).join(" · "),
-    detail: v.description ?? "",
-  }));
-
-  const peopleRows: Row[] = people.map((p) => ({
-    id: p.id,
-    status: p.status,
-    title: p.name,
-    subtitle: [p.relation, p.company].filter(Boolean).join(" · "),
-    detail: p.bio ?? "",
-  }));
-
   return (
     <Shell>
-      <ModerationSection
-        table="ventures"
+      <Section
         heading="Ventures"
-        rows={ventureRows}
+        total={ventures.length}
+        pending={ventures.filter((v) => v.status === "pending").length}
         emptyLabel="No ventures submitted yet."
-      />
-      <ModerationSection
-        table="people"
+      >
+        {pendingFirst(ventures).map((v) => (
+          <VentureAdminCard key={v.id} v={v} />
+        ))}
+      </Section>
+
+      <Section
         heading="Network"
-        rows={peopleRows}
+        total={people.length}
+        pending={people.filter((p) => p.status === "pending").length}
         emptyLabel="No people submitted yet."
-      />
+      >
+        {pendingFirst(people).map((p) => (
+          <PersonAdminCard key={p.id} p={p} />
+        ))}
+      </Section>
     </Shell>
   );
 }
@@ -111,31 +101,27 @@ function Shell({ children }: { children: React.ReactNode }) {
         Content administration
       </h1>
       <p className="mt-2 text-sm text-[var(--color-slate-body)]">
-        Review submissions and manage what appears publicly. Access is
-        restricted to authorized club officers.
+        Review submissions, edit records, and manage what appears publicly.
+        Access is restricted to authorized club officers.
       </p>
       <div className="mt-10 space-y-14">{children}</div>
     </section>
   );
 }
 
-function ModerationSection({
-  table,
+function Section({
   heading,
-  rows,
+  total,
+  pending,
   emptyLabel,
+  children,
 }: {
-  table: Table;
   heading: string;
-  rows: Row[];
+  total: number;
+  pending: number;
   emptyLabel: string;
+  children: React.ReactNode;
 }) {
-  const pending = rows.filter((r) => r.status === "pending").length;
-  // Pending first, so items needing review sit at the top.
-  const sorted = [...rows].sort((a, b) =>
-    a.status === b.status ? 0 : a.status === "pending" ? -1 : 1,
-  );
-
   return (
     <div>
       <div className="flex items-center gap-3">
@@ -146,92 +132,15 @@ function ModerationSection({
           </span>
         )}
         <span className="text-sm text-[var(--color-slate-body)]">
-          {rows.length} total
+          {total} total
         </span>
       </div>
 
-      {rows.length === 0 ? (
+      {total === 0 ? (
         <p className="mt-4 text-[var(--color-slate-body)]">{emptyLabel}</p>
       ) : (
-        <ul className="mt-5 space-y-3">
-          {sorted.map((r) => (
-            <li
-              key={r.id}
-              className="card flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between"
-            >
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-[var(--color-navy)]">
-                    {r.title}
-                  </span>
-                  <span
-                    className={`badge ${
-                      r.status === "pending"
-                        ? "!border-amber-200 !bg-amber-50 !text-amber-700"
-                        : "!border-emerald-200 !bg-emerald-50 !text-emerald-700"
-                    }`}
-                  >
-                    {r.status}
-                  </span>
-                </div>
-                {r.subtitle && (
-                  <p className="text-xs text-[var(--color-slate-body)]">
-                    {r.subtitle}
-                  </p>
-                )}
-                {r.detail && (
-                  <p className="mt-1 line-clamp-2 max-w-2xl text-sm text-[var(--color-slate-body)]">
-                    {r.detail}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-none gap-2">
-                {r.status === "pending" ? (
-                  <ActionForm table={table} id={r.id} op="approve">
-                    <button className="btn btn-primary text-sm">Approve</button>
-                  </ActionForm>
-                ) : (
-                  <ActionForm table={table} id={r.id} op="unpublish">
-                    <button className="btn btn-outline text-sm">
-                      Unpublish
-                    </button>
-                  </ActionForm>
-                )}
-                <ActionForm table={table} id={r.id} op="delete">
-                  <ConfirmButton
-                    message={`Delete "${r.title}"? This cannot be undone.`}
-                    className="btn btn-outline text-sm !text-red-600 hover:!border-red-300"
-                  >
-                    Delete
-                  </ConfirmButton>
-                </ActionForm>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <ul className="mt-5 space-y-3">{children}</ul>
       )}
     </div>
-  );
-}
-
-function ActionForm({
-  table,
-  id,
-  op,
-  children,
-}: {
-  table: Table;
-  id: string;
-  op: "approve" | "unpublish" | "delete";
-  children: React.ReactNode;
-}) {
-  return (
-    <form action={moderate}>
-      <input type="hidden" name="table" value={table} />
-      <input type="hidden" name="id" value={id} />
-      <input type="hidden" name="op" value={op} />
-      {children}
-    </form>
   );
 }
