@@ -83,7 +83,15 @@ export default function SiteFooter() {
           <p>
             © {year} {SITE.name}, {SITE.school}.
           </p>
-          <p>Chapel Hill, North Carolina</p>
+          <div className="flex items-center gap-3">
+            <p>Chapel Hill, North Carolina</p>
+            <Link
+              href="/admin"
+              className="rounded border border-[var(--color-line)] px-2 py-1 text-[11px] text-[var(--color-slate-body)] opacity-70 transition hover:border-[var(--color-slate-body)] hover:opacity-100"
+            >
+              Admin
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

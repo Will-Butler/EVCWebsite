@@ -1,20 +1,12 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import type { Metadata } from "next";
 import Image from "next/image";
+import boardPhoto from "../../../public/exec-board.png";
 import PageHeader from "@/components/PageHeader";
 import ProgramsExplorer from "@/components/ProgramsExplorer";
 import Reveal from "@/components/Reveal";
 import { SITE } from "@/lib/constants";
 import { PROGRAMS } from "@/lib/programs";
 import { pageMetadata, JsonLd } from "@/lib/seo";
-
-// Show the real board graphic when it's present, otherwise fall back to the
-// placeholder — checked at build time so the page never depends on a missing
-// file. Drop the image at public/exec-board.png to enable it.
-const hasBoardPhoto = existsSync(
-  join(process.cwd(), "public", "exec-board.png"),
-);
 
 export const metadata: Metadata = pageMetadata({
   title: "About & Programs",
@@ -191,31 +183,14 @@ export default function AboutPage() {
           </p>
         </Reveal>
 
-        {hasBoardPhoto ? (
-          <Reveal className="mt-12">
-            <Image
-              src="/exec-board.png"
-              alt="The 2026–2027 EVC Executive Board: William Butler (President), Satbir Bhatti (EVP of VC), Addie Masterson (EVP of Entrepreneurship), Ramya Meenakshisundaram (VP of Outreach), Daniella Kapural (VP of L&D), Sahitya Yarlagadda (VP of Comms), and Declan Pene (VP of Finance)."
-              width={1920}
-              height={1080}
-              sizes="(min-width: 1152px) 1104px, 100vw"
-              className="h-auto w-full rounded-2xl border border-[var(--color-line)] shadow-[var(--shadow-lift)]"
-            />
-          </Reveal>
-        ) : (
-          /* Drop the board graphic at public/exec-board.png to replace this
-             placeholder (kept as a plain box so the page never depends on a
-             missing image). */
-          <div className="mt-12 flex aspect-video items-center justify-center rounded-2xl border border-dashed border-[var(--color-line)] bg-[var(--color-surface-muted)] text-center text-sm text-[var(--color-slate-body)]">
-            <span className="max-w-xs px-6">
-              Executive Board graphic — add{" "}
-              <code className="rounded bg-white px-1 py-0.5 text-xs">
-                public/exec-board.png
-              </code>{" "}
-              to display it here.
-            </span>
-          </div>
-        )}
+        <Reveal className="mt-12">
+          <Image
+            src={boardPhoto}
+            alt="The 2026–2027 EVC Executive Board: William Butler (President), Satbir Bhatti (EVP of VC), Addie Masterson (EVP of Entrepreneurship), Ramya Meenakshisundaram (VP of Outreach), Daniella Kapural (VP of L&D), Sahitya Yarlagadda (VP of Comms), and Declan Pene (VP of Finance)."
+            sizes="(min-width: 1152px) 1104px, 100vw"
+            className="h-auto w-full rounded-2xl border border-[var(--color-line)] shadow-[var(--shadow-lift)]"
+          />
+        </Reveal>
       </section>
     </>
   );

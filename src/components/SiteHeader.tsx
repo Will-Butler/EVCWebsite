@@ -60,9 +60,6 @@ export default function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <Link href="/admin" className="btn btn-navy ml-2 py-2 text-sm">
-            Admin
-          </Link>
         </div>
 
         <button
@@ -114,13 +111,6 @@ export default function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/admin"
-              onClick={() => setOpen(false)}
-              className="mt-1 rounded-md px-3 py-2.5 text-sm font-semibold text-[var(--color-navy)]"
-            >
-              Admin
-            </Link>
           </div>
         </div>
       )}
