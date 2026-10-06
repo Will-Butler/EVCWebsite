@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { NAV, SITE } from "@/lib/constants";
@@ -20,17 +21,24 @@ export default function SiteHeader() {
       >
         <Link
           href="/"
-          className="flex items-center gap-2.5"
+          className="group flex items-center gap-2.5"
           onClick={() => setOpen(false)}
         >
           <span
             aria-hidden
-            className="grid h-9 w-9 place-items-center rounded-lg bg-[var(--color-navy)] text-sm font-bold text-white"
+            className="grid h-10 w-10 place-items-center overflow-hidden rounded-lg bg-[var(--color-navy)] ring-1 ring-black/10 transition-transform duration-300 group-hover:-rotate-6"
           >
-            EVC
+            <Image
+              src="/EVCLogo.png"
+              alt=""
+              width={40}
+              height={40}
+              className="h-full w-full object-cover"
+              priority
+            />
           </span>
           <span className="hidden text-sm font-semibold leading-tight text-[var(--color-navy)] sm:block">
-            Entrepreneurship &amp; Venture Capital
+            Entrepreneurship &amp; Venture Capital Club
             <span className="block text-xs font-medium text-[var(--color-slate-body)]">
               {SITE.school}
             </span>
@@ -43,18 +51,15 @@ export default function SiteHeader() {
               key={item.href}
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
-              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+              className={`nav-link rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                 isActive(item.href)
-                  ? "text-[var(--color-carolina-dark)]"
+                  ? "text-[var(--color-navy)]"
                   : "text-[var(--color-slate-body)] hover:text-[var(--color-navy)]"
               }`}
             >
               {item.label}
             </Link>
           ))}
-          <Link href="/admin" className="btn btn-navy ml-2 py-2 text-sm">
-            Admin
-          </Link>
         </div>
 
         <button
@@ -106,13 +111,6 @@ export default function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/admin"
-              onClick={() => setOpen(false)}
-              className="mt-1 rounded-md px-3 py-2.5 text-sm font-semibold text-[var(--color-navy)]"
-            >
-              Admin
-            </Link>
           </div>
         </div>
       )}

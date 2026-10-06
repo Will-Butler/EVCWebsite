@@ -18,10 +18,21 @@
   --color-surface-muted: #f5f8fc;
   --color-line: #e2e8f0;
 
+  /* Warm "signal" accent — the spark of entrepreneurial energy against the
+     cool Carolina palette. Used sparingly for marks, strokes, and highlights. */
+  --color-signal: #ff6a3d;
+  --color-signal-soft: #ffd8c7;
+
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* Editorial serif for headlines. */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  /* Geometric grotesque for UI chrome, eyebrows, and labels. */
+  --font-ui: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
 
   --shadow-card: 0 1px 2px rgba(15, 27, 45, 0.04),
     0 8px 24px -12px rgba(15, 27, 45, 0.18);
+  --shadow-lift: 0 2px 4px rgba(15, 27, 45, 0.05),
+    0 24px 48px -20px rgba(15, 27, 45, 0.28);
 }
 
 html {
@@ -34,6 +45,15 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Editorial serif headlines. Card-level h3s stay in the sans/grotesk system
+   for contrast; the big statements carry the personality. */
+h1,
+h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  font-optical-sizing: auto;
 }
 
 /* Consistent focus ring for keyboard users / accessibility. */
@@ -53,20 +73,46 @@ body {
   }
 
   .btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
     border-radius: 0.625rem;
     padding: 0.7rem 1.25rem;
+    font-family: var(--font-ui);
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
     line-height: 1;
-    transition: background-color 0.15s ease, color 0.15s ease,
-      border-color 0.15s ease, transform 0.05s ease;
+    overflow: hidden;
+    transition: background-color 0.18s ease, color 0.18s ease,
+      border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
   }
   .btn:active {
-    transform: translateY(1px);
+    transform: translateY(0);
+  }
+  /* Sheen sweep on primary/navy buttons. */
+  .btn-primary::after,
+  .btn-navy::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.28) 50%,
+      transparent 80%
+    );
+    transform: translateX(-120%);
+    transition: transform 0.6s ease;
+  }
+  .btn-primary:hover::after,
+  .btn-navy:hover::after {
+    transform: translateX(120%);
   }
   .btn-primary {
     background: var(--color-carolina);
@@ -100,11 +146,23 @@ body {
   }
 
   .eyebrow {
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--color-carolina-dark);
+  }
+  /* Small leading tick before eyebrow text. */
+  .eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 2px;
+    background: var(--color-signal);
+    display: inline-block;
   }
 
   .label {
@@ -139,9 +197,285 @@ body {
     border-radius: 9999px;
     background: var(--color-surface-muted);
     border: 1px solid var(--color-line);
-    padding: 0.15rem 0.6rem;
-    font-size: 0.72rem;
+    padding: 0.2rem 0.65rem;
+    font-family: var(--font-ui);
+    font-size: 0.68rem;
     font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     color: var(--color-carolina-dark);
+  }
+
+  /* Hand-drawn marker highlight behind a key word or two. */
+  .mark {
+    background-image: linear-gradient(
+      104deg,
+      transparent 0.4%,
+      var(--color-signal-soft) 2.4%,
+      var(--color-signal-soft) 97%,
+      transparent 99.6%
+    );
+    padding: 0 0.15em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  /* Small pill used for ecosystem tags / metadata. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.4rem 0.9rem;
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Animated arrow link — nudges forward on hover. */
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--color-carolina-dark);
+    transition: gap 0.18s ease;
+  }
+  .link-arrow:hover {
+    gap: 0.65rem;
+  }
+
+  /* Nav link with an animated signal underline that grows from the left. */
+  .nav-link {
+    position: relative;
+    font-family: var(--font-ui);
+    letter-spacing: 0.01em;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.3rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-signal);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-link:hover::after,
+  .nav-link[aria-current="page"]::after {
+    transform: scaleX(1);
+  }
+}
+
+/* ─── Motion system ────────────────────────────────────────────────────────
+   Tasteful, purposeful animation: entrances that guide attention, ambient
+   texture, and micro-interactions. Everything below is disabled wholesale for
+   users who prefer reduced motion (see the media query at the very end). */
+
+/* Faint blueprint dot-grid, layered behind dark sections for depth. */
+.dot-grid {
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.12) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+}
+
+/* Drifting aurora blobs for the hero — slow, organic, GPU-friendly. */
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(4%, -3%, 0) scale(1.12);
+  }
+  66% {
+    transform: translate3d(-3%, 4%, 0) scale(0.95);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+.aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.55;
+  will-change: transform;
+  animation: aurora-drift 18s ease-in-out infinite;
+}
+
+/* Kinetic hero: words rise + fade in, staggered via inline animation-delay. */
+@keyframes word-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.75em) rotate(1.5deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0);
+  }
+}
+.word-rise > span {
+  display: inline-block;
+  opacity: 0;
+  animation: word-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Grows the signal underline stroke in after the headline lands. */
+@keyframes stroke-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.stroke-grow {
+  transform-origin: left;
+  animation: stroke-grow 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
+}
+
+/* Simple on-load entrance for above-the-fold content (no observer needed). */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise-in {
+  opacity: 0;
+  animation: rise-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Scroll-triggered reveal. Elements start shifted + transparent; the Reveal
+   component adds .is-visible when they enter the viewport. */
+.reveal-item {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal-item.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Infinite marquee ticker. Track is duplicated in markup, so -50% loops
+   seamlessly. Pauses on hover for readability. */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  display: flex;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+.marquee__track {
+  display: flex;
+  flex: none;
+  gap: 3rem;
+  padding-right: 3rem;
+  animation: marquee-scroll 32s linear infinite;
+}
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+/* Gentle float for accent/decorative elements. */
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.float-soft {
+  animation: float-soft 6s ease-in-out infinite;
+}
+
+/* Animated gradient wash for select display text. */
+@keyframes gradient-pan {
+  to {
+    background-position: 200% center;
+  }
+}
+.text-gradient {
+  background: linear-gradient(
+    100deg,
+    var(--color-carolina) 0%,
+    var(--color-signal) 45%,
+    var(--color-carolina) 90%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-pan 6s linear infinite;
+}
+
+/* Accordion body reveal for the programs explorer. */
+.reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.reveal > div {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-item,
+  .word-rise > span,
+  .stroke-grow,
+  .rise-in {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

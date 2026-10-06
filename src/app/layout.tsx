@@ -1,13 +1,31 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Fraunces, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { SITE } from "@/lib/constants";
 import { organizationJsonLd, JsonLd } from "@/lib/seo";
 
+// Body copy — clean, highly legible.
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// Display — a high-contrast, characterful editorial serif (with italics) that
+// carries the "entrepreneurial personality" the club wants in its headlines.
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+// UI — a geometric grotesque for eyebrows, labels, buttons, and nav. The
+// serif/grotesque pairing is the 2026 editorial signature.
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-grotesk",
   subsets: ["latin"],
   display: "swap",
 });
@@ -42,7 +60,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${fraunces.variable} ${spaceGrotesk.variable} h-full`}
+    >
       <body className="min-h-full flex flex-col">
         <JsonLd data={organizationJsonLd()} />
         <a

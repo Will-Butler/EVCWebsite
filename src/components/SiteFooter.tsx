@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { NAV, SITE } from "@/lib/constants";
 
 export default function SiteFooter() {
@@ -10,9 +11,15 @@ export default function SiteFooter() {
           <div className="flex items-center gap-2.5">
             <span
               aria-hidden
-              className="grid h-9 w-9 place-items-center rounded-lg bg-[var(--color-navy)] text-sm font-bold text-white"
+              className="grid h-10 w-10 place-items-center overflow-hidden rounded-lg bg-[var(--color-navy)] ring-1 ring-black/10"
             >
-              EVC
+              <Image
+                src="/EVCLogo.png"
+                alt=""
+                width={40}
+                height={40}
+                className="h-full w-full object-cover"
+              />
             </span>
             <span className="text-sm font-semibold text-[var(--color-navy)]">
               {SITE.shortName}
@@ -76,7 +83,15 @@ export default function SiteFooter() {
           <p>
             © {year} {SITE.name}, {SITE.school}.
           </p>
-          <p>Chapel Hill, North Carolina</p>
+          <div className="flex items-center gap-3">
+            <p>Chapel Hill, North Carolina</p>
+            <Link
+              href="/admin"
+              className="rounded border border-[var(--color-line)] px-2 py-1 text-[11px] text-[var(--color-slate-body)] opacity-70 transition hover:border-[var(--color-slate-body)] hover:opacity-100"
+            >
+              Admin
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

@@ -5,6 +5,8 @@ import { headers } from "next/headers";
 import {
   dbInsertVenture,
   dbInsertPerson,
+  dbUpdateVenture,
+  dbUpdatePerson,
   dbSetStatus,
   dbDelete,
   hasDb,
@@ -82,6 +84,70 @@ async function assertAdmin(): Promise<void> {
   if (process.env.NODE_ENV !== "production") return;
   const email = (await headers()).get("cf-access-authenticated-user-email");
   if (!email) throw new Error("Unauthorized");
+}
+
+// ---------- Admin edits (guarded) ------------------------------------------
+
+export async function updateVenture(
+  id: string,
+  data: VentureSubmission,
+): Promise<ActionResult> {
+  try {
+    await assertAdmin();
+    if (!hasDb()) return { ok: false, error: NOT_CONFIGURED };
+    const name = data.name?.trim();
+    const description = data.description?.trim();
+    const founder = data.founder?.trim();
+    if (!name || !description || !founder) {
+      return {
+        ok: false,
+        error: "Name, description, and founder are required.",
+      };
+    }
+    await dbUpdateVenture(id, {
+      name,
+      description,
+      industries: (data.industries ?? []).map((s) => s.trim()).filter(Boolean),
+      founder,
+      year: data.year ?? null,
+      contact_email: data.contact_email?.trim() || null,
+      website: data.website?.trim() || null,
+    });
+    revalidatePath("/ventures");
+    revalidatePath("/admin");
+    return { ok: true };
+  } catch (e) {
+    console.error("updateVenture:", e);
+    return { ok: false, error: "Something went wrong. Please try again." };
+  }
+}
+
+export async function updatePerson(
+  id: string,
+  data: PersonSubmission,
+): Promise<ActionResult> {
+  try {
+    await assertAdmin();
+    if (!hasDb()) return { ok: false, error: NOT_CONFIGURED };
+    const name = data.name?.trim();
+    if (!name) return { ok: false, error: "Name is required." };
+    await dbUpdatePerson(id, {
+      name,
+      relation: data.relation?.trim() || "Current Student",
+      title: data.title?.trim() || null,
+      company: data.company?.trim() || null,
+      grad_year: data.grad_year ?? null,
+      email: data.email?.trim() || null,
+      linkedin: data.linkedin?.trim() || null,
+      bio: data.bio?.trim() || null,
+    });
+    revalidatePath("/network");
+    revalidatePath("/admin");
+    return { ok: true };
+  } catch (e) {
+    console.error("updatePerson:", e);
+    return { ok: false, error: "Something went wrong. Please try again." };
+  }
 }
 
 /** Form action used by the admin dashboard buttons. */
